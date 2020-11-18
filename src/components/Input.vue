@@ -1,26 +1,33 @@
 <template>
-  <div class="input-container">
-    <div>
-      <h3>Vali või sisesta kümneelemendiline järjend kujul 1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1</h3>
-      <table>
-        <tr v-for="(inputLine, index) in inputLines" :key="index">
-          <td>
-            <label class="container">{{ inputLine.label }}
-              <input type="radio" @click="selectInput(inputLine)" name="radio">
-              <span class="checkmark"></span>
-            </label>
-          </td>
-          <td v-if="(inputLine.processes.length !== 0)">{{ inputLine.processes }}</td>
-          <td v-else><input name="myProc" type="text"/></td>
-        </tr>
-      </table>
-      <h3>Vali algoritm</h3>
-    </div>
-    <div class="buttons">
-      <div class="buttons" v-for="(button, index) in algoButtons" :key="index">
-        <button :class="{'selected': button.selected, 'unselected': !button.selected}" @click="selectAlgorithm(button)">
-          {{button.text}}
-        </button>
+  <div>
+    <h4>
+      <span id="NB"><Strong>NB! Rakenduses on sees kasutajavaenulikud vead.</Strong></span><br>
+      Kui oled valinud järjendi ja algoritmi, siis kuvatakse sisu nii nagu peab. Kui aga soovid valida uue algoritmi ja/või järjendi, siis pead lehekülge värskendama (refresh).<br>
+      Enne tähtaega ma paraku ei jõua seda viga parandada, vast saab lehte pidevalt värskendades hakkama.
+    </h4>
+    <div class="input-container">
+      <div>
+        <h3>Vali või sisesta kümneelemendiline järjend kujul 1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1</h3>
+        <table>
+          <tr v-for="(inputLine, index) in inputLines" :key="index">
+            <td>
+              <label class="container">{{ inputLine.label }}
+                <input type="radio" @click="selectInput(inputLine)" name="radio">
+                <span class="checkmark"></span>
+              </label>
+            </td>
+            <td v-if="(inputLine.processes.length !== 0)">{{ inputLine.processes }}</td>
+            <td v-else><input name="myProc" type="text"/></td>
+          </tr>
+        </table>
+        <h3>Vali algoritm</h3>
+      </div>
+      <div class="buttons">
+        <div class="buttons" v-for="(button, index) in algoButtons" :key="index">
+          <button :class="{'selected': button.selected, 'unselected': !button.selected}" @click="selectAlgorithm(button)">
+            {{button.text}}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -138,12 +145,26 @@ export default {
 
   button {
     margin: 0 10px 5px 0;
+    border-radius: 4px;
+    box-shadow: 1px 1px;
   }
 
   .input-container {
     border-radius: 10px;
     background-color: silver;
     padding: 10px 10px 20px 20px;
+    box-shadow: 2px 2px 2px 2px;
+  }
+
+  input[type=text] {
+    width: 100%;
+    height: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
   }
 
   td {
@@ -152,10 +173,15 @@ export default {
 
   .selected {
     background-color: #2196F3;
+    box-shadow: 2px 2px;
   }
 
   .unselected {
     background-color: #dddddd;
+  }
+
+  #NB {
+    color: firebrick;
   }
 
 </style>

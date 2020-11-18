@@ -13,6 +13,7 @@
         </td>
       </tr>
     </table>
+    <span id="helper" />
   </div>
 </template>
 
@@ -42,7 +43,6 @@ export default {
       if (x===0 && y===0) {
         calculateOutput(cmd, algo)
       }
-
       // Change the background color
       let letterForDisplay = outputMatrice[y][x]
 
@@ -106,8 +106,7 @@ function firstFitter(cmd) {
     let firstFreeSlot = findFirstFreeSlot(i, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    //                             OR process demands too much time
-    if (firstFreeSlot.length === 0 || i+timeUnits > 10) {
+    if (firstFreeSlot.length === 0) {
       outputMatrice[i] = processWontFit();
       continue;
     }
@@ -115,10 +114,17 @@ function firstFitter(cmd) {
     let from = firstFreeSlot[0]
     let to = firstFreeSlot[1]
 
+    // we have to display only 10 steps, so we don-t care about the rest
+    if (i+timeUnits > 10) {
+      notifyUserTableNotBigEnough(letters[i], process, (i+timeUnits-10));
+      timeUnits = 10;
+    } else {
+      timeUnits = i + timeUnits;
+    }
 
     // Modify outputMatrice 2 dimensional area. ( from point (l, k), area size (memUnits x timeUnits) )
     for (let k = from; k < to; k++) {
-      for (let l = i; l < i+timeUnits; l++) {
+      for (let l = i; l < timeUnits; l++) {
         outputMatrice[l][k] = letters[i]
       }
     }
@@ -159,15 +165,22 @@ function lastFitter(cmd) {
     let lastBigEnoughSlot = findLastBigEnoughSlot(slots, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    //                                 OR process demands too much time
-    if (lastBigEnoughSlot.length === 0 || i+timeUnits > 10) {
+    if (lastBigEnoughSlot.length === 0) {
       outputMatrice[i] = processWontFit();
       continue;
     }
 
+    // we have to display only 10 steps, so we don-t care about the rest
+    if (i+timeUnits > 10) {
+      notifyUserTableNotBigEnough(letters[i], process, (i+timeUnits-10));
+      timeUnits = 10;
+    } else {
+      timeUnits = i + timeUnits;
+    }
+
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
     for (let j = lastBigEnoughSlot[0]; j < lastBigEnoughSlot[0] + memUnits; j++) {
-      for (let k = i; k < i + timeUnits; k++) {
+      for (let k = i; k < timeUnits; k++) {
         outputMatrice[k][j] = letters[i]
       }
     }
@@ -202,15 +215,22 @@ function bestFitter(cmd) {
     let bestSlot = findBestSlot(slots, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    //                        OR process demands too much time
-    if (bestSlot.length === 0 || i+timeUnits > 10) {
+    if (bestSlot.length === 0) {
       outputMatrice[i] = processWontFit();
       continue;
     }
 
+    // we have to display only 10 steps, so we don-t care about the rest
+    if (i+timeUnits > 10) {
+      notifyUserTableNotBigEnough(letters[i], process, (i+timeUnits-10));
+      timeUnits = 10;
+    } else {
+      timeUnits = i + timeUnits;
+    }
+
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
     for (let j = bestSlot[0]; j < bestSlot[0] + memUnits; j++) {
-      for (let k = i; k < i + timeUnits; k++) {
+      for (let k = i; k < timeUnits; k++) {
         outputMatrice[k][j] = letters[i]
       }
     }
@@ -252,15 +272,22 @@ function worstFitter(cmd) {
     let biggest = biggestSlot(slots)
 
     // Algorithm fills the line with error message, if can't find a slot
-    //                                          OR process demands too much time
-    if (suitableSlotNotFound(biggest, memUnits) || i+timeUnits > 10) {
+    if (suitableSlotNotFound(biggest, memUnits)) {
       outputMatrice[i] = processWontFit();
       continue;
     }
 
+    // we have to display only 10 steps, so we don-t care about the rest
+    if (i+timeUnits > 10) {
+      notifyUserTableNotBigEnough(letters[i], process, (i+timeUnits-10));
+      timeUnits = 10;
+    } else {
+      timeUnits = i + timeUnits;
+    }
+
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
     for (let j = biggest[0]; j < biggest[0] + memUnits; j++) {
-      for (let k = i; k < i + timeUnits; k++) {
+      for (let k = i; k < timeUnits; k++) {
         outputMatrice[k][j] = letters[i]
       }
     }
@@ -301,15 +328,22 @@ function randomFitter(cmd) {
     let randomSlot = findRandomSlotThatIsBigEnough(slots, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    //                          OR process demands too much time
-    if (randomSlot.length === 0 || i+timeUnits > 10) {
+    if (randomSlot.length === 0) {
       outputMatrice[i] = processWontFit();
       continue;
     }
 
+    // we have to display only 10 steps, so we don-t care about the rest
+    if (i+timeUnits > 10) {
+      notifyUserTableNotBigEnough(letters[i], process, (i+timeUnits-10));
+      timeUnits = 10;
+    } else {
+      timeUnits = i + timeUnits;
+    }
+
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
     for (let j = randomSlot[0]; j < randomSlot[0] + memUnits; j++) {
-      for (let k = i; k < i + timeUnits; k++) {
+      for (let k = i; k < timeUnits; k++) {
         outputMatrice[k][j] = letters[i]
       }
     }
@@ -337,9 +371,8 @@ function fillUp() {
   let arr = []
   for (let i = 0; i < 10; i++) {
     let arr2 = []
-    for (let j = 0; j < 50; j++) {
+    for (let j = 0; j < 50; j++)
       arr2.push("-")
-    }
     arr.push(arr2)
   }
   return arr
@@ -370,14 +403,13 @@ function findFreeSlots(i) {
 
 function changeOutputBackground(letter, id) {
   let letters = "ABCDEFGHIJ"
-  let colors = ["#00ff00", "#ff3333", "darkorange", "#0099ff", "yellow", "#b366ff", "#cc9900", "#ff0066", "cyan"]
+  let colors = ["#00ff00", "#ff3333", "darkorange", "#0099ff", "yellow", "#b366ff", "#cc9900", "#ff0066", "cyan", "#009999"]
   let index = letters.indexOf(letter)
   if (cantPlaceOnThisLine < 0 && index >= 0) {
     document.getElementById(id).style.backgroundColor = colors[index]
   } else if (cantPlaceOnThisLine >= 0) {
     document.getElementById(id).style.backgroundColor = "black"
     document.getElementById(id).style.color = "white"
-
     // if faulty line is marked, continue work as usual
     if (id.substring(0,2) === "49")
       cantPlaceOnThisLine = -1
@@ -393,6 +425,15 @@ function processWontFit() {
   return arr
 }
 
+function notifyUserTableNotBigEnough(letter, proc, leftOut) {
+  let element = document.createElement("h5");
+  let str = document.createTextNode("Protsess " + letter + " : " + proc + " ei mahtunud tabelisse ära. \n" + leftOut +
+      " rida jäi tabelist välja.      (tahtsin teha tabeli dünaamiliselt suurenevaks, kui kood läks liiga spagetiks ära ja pole aega ümber strukueerida)");
+  element.appendChild(str);
+  let existingNode = document.getElementById("helper");
+  existingNode.insertBefore(element, existingNode.childNodes[0])
+}
+
 </script>
 
 <style scoped>
@@ -405,12 +446,12 @@ function processWontFit() {
 
   .memoryCell {
     background-color: silver;
+    border-radius: 3px;
     width: inherit;
     height: inherit;
   }
 
   table {
-    /*min-height: 330px;*/
     border-collapse: separate;
   }
   td {
