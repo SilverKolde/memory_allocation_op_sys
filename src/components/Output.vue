@@ -39,8 +39,9 @@ export default {
       cmd = cmd.split(";")
 
       // Before writing output to first memory slot, we'll do calculations and put result into outputMatrice
-       if (x===0 && y===0)
-         calculateOutput(cmd, algo)
+      if (x===0 && y===0) {
+        calculateOutput(cmd, algo)
+      }
 
       // Change the background color
       let letterForDisplay = outputMatrice[y][x]
@@ -105,13 +106,15 @@ function firstFitter(cmd) {
     let firstFreeSlot = findFirstFreeSlot(i, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    if (firstFreeSlot.length === 0) {
+    //                             OR process demands too much time
+    if (firstFreeSlot.length === 0 || i+timeUnits > 10) {
       outputMatrice[i] = processWontFit();
       continue;
     }
 
     let from = firstFreeSlot[0]
     let to = firstFreeSlot[1]
+
 
     // Modify outputMatrice 2 dimensional area. ( from point (l, k), area size (memUnits x timeUnits) )
     for (let k = from; k < to; k++) {
@@ -156,7 +159,8 @@ function lastFitter(cmd) {
     let lastBigEnoughSlot = findLastBigEnoughSlot(slots, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    if (lastBigEnoughSlot.length === 0) {
+    //                                 OR process demands too much time
+    if (lastBigEnoughSlot.length === 0 || i+timeUnits > 10) {
       outputMatrice[i] = processWontFit();
       continue;
     }
@@ -198,7 +202,8 @@ function bestFitter(cmd) {
     let bestSlot = findBestSlot(slots, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    if (bestSlot.length === 0) {
+    //                        OR process demands too much time
+    if (bestSlot.length === 0 || i+timeUnits > 10) {
       outputMatrice[i] = processWontFit();
       continue;
     }
@@ -247,7 +252,8 @@ function worstFitter(cmd) {
     let biggest = biggestSlot(slots)
 
     // Algorithm fills the line with error message, if can't find a slot
-    if (suitableSlotNotFound(biggest, memUnits)) {
+    //                                          OR process demands too much time
+    if (suitableSlotNotFound(biggest, memUnits) || i+timeUnits > 10) {
       outputMatrice[i] = processWontFit();
       continue;
     }
@@ -295,7 +301,8 @@ function randomFitter(cmd) {
     let randomSlot = findRandomSlotThatIsBigEnough(slots, memUnits)
 
     // Algorithm fills the line with error message, if can't find a slot
-    if (randomSlot.length === 0) {
+    //                          OR process demands too much time
+    if (randomSlot.length === 0 || i+timeUnits > 10) {
       outputMatrice[i] = processWontFit();
       continue;
     }

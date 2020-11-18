@@ -18,13 +18,10 @@
     </div>
     <div class="buttons">
       <div class="buttons" v-for="(button, index) in algoButtons" :key="index">
-        <button @click="selectAlgorithm(button)">
+        <button :class="{'selected': button.selected, 'unselected': !button.selected}" @click="selectAlgorithm(button)">
           {{button.text}}
         </button>
       </div>
-    </div>
-    <div class="buttons">
-      <button @click="clear">Puhasta väljund</button>
     </div>
   </div>
 </template>
@@ -158,7 +155,7 @@ export default {
   }
 
   .unselected {
-    background-color: inherit;
+    background-color: #dddddd;
   }
 
 </style>

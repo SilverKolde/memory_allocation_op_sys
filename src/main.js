@@ -19,8 +19,10 @@ const store = new Vuex.Store({
       new Button("Random-Fit"),
     ],
     inputLines: [
-      new InputLine("Esimene", "1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1"),
-      new InputLine("Teine", "1,8;7,4;10,6;25,2;1,4;13,3;6,2;8,1;50,1"),
+      new InputLine("Näidis1", "1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1"),
+      new InputLine("Näidis2", "1,8;7,4;10,6;25,2;1,4;13,3;6,2;8,1;50,1"),
+      new InputLine("Esimene", "4,5;2,7;9,2;4,6;7,1;6,4;8,8;3,6;1,10;9,2"),
+      new InputLine("Teine", "1,10;6,6;3,9;2,4;1,6;5,2;1,4;5,2;2,1;2,7"),
       new InputLine("Kolmas", "5,10;6,6;3,9;8,4;3,6;5,12;1,4;15,3;3,4;9,7"),
       new InputLine("Enda oma", "")
     ],
@@ -29,6 +31,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     unSelectAllExceptThis: (state, button) => {
+      button.selected = true;
       state.selectedAlgorithm = button;
       for (let i = 0; i < state.algoButtons.length; i++) {
         if (button !== state.algoButtons[i])

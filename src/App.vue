@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Input v-on:buttonClicked="isSibling1Clicked = true"/>
-    <OutPut v-bind:isMySiblingClicked ="isSibling1Clicked"/>
+    <Input/>
+    <OutPut/>
   </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
   name: 'App',
   data() {
     return {
-      isSibling1Clicked: false
+      componentKey: 0
     }
   },
   components: {
