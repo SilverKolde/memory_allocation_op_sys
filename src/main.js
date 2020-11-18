@@ -25,7 +25,7 @@ const store = new Vuex.Store({
       new InputLine("Enda oma", "")
     ],
     selectedAlgorithm: null,
-    pickedInput: null
+    selectedInput: null
   },
   mutations: {
     unSelectAllExceptThis: (state, button) => {
@@ -40,8 +40,8 @@ const store = new Vuex.Store({
         state.algoButtons[i].selected = false;
       }
     },
-    pickedInput: function (state, foo) {
-      state.pickedInput = foo;
+    selectInput: function (state, payload) {
+      state.selectedInput = payload;
     }
   },
   getters: {
@@ -49,7 +49,8 @@ const store = new Vuex.Store({
       return state.algoButtons
     },
     getInputLines: (state) => state.inputLines,
-    getSelectedAlgorithm: (state) => state.selectedAlgorithm
+    getSelectedAlgorithm: (state) => state.selectedAlgorithm,
+    getSelectedInput: (state) => state.selectedInput
   }
 })
 

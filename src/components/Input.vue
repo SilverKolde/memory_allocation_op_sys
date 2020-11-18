@@ -6,7 +6,7 @@
         <tr v-for="(inputLine, index) in inputLines" :key="index">
           <td>
             <label class="container">{{ inputLine.label }}
-              <input type="radio" @click="pickedInput(inputLine)" name="radio">
+              <input type="radio" @click="selectInput(inputLine)" name="radio">
               <span class="checkmark"></span>
             </label>
           </td>
@@ -18,7 +18,7 @@
     </div>
     <div class="buttons">
       <div class="buttons" v-for="(button, index) in algoButtons" :key="index">
-        <button :class="{'selected' : button.selected, 'unselected' : !button.selected}" @click="select(button)">
+        <button @click="selectAlgorithm(button)">
           {{button.text}}
         </button>
       </div>
@@ -32,7 +32,6 @@
 <script>
 
 
-
 export default {
   name: "Input",
   computed: {
@@ -44,21 +43,22 @@ export default {
     }
   },
   methods: {
-    select: function (button) {
-      button.selected = !button.selected;
+    selectAlgorithm: function (button) {
       this.$store.commit("unSelectAllExceptThis", button);
     },
-    pickedInput: function (foo) {
+    selectInput: function (inputLine) {
+      if (this.$store.getters.getSelectedInput !== null)
+        this.clear();
       let procs;
-      if (foo.label === "Enda oma") {
+      if (inputLine.label === "Enda oma") {
         procs = document.querySelector("input[name=myProc]").value
       }
-      else procs = foo.processes
-      this.$store.commit("pickedInput", procs)
+      else procs = inputLine.processes
+      this.$store.commit("selectInput", procs)
     },
     clear() {
       this.$store.state.selectedAlgorithm = null
-      this.$store.state.pickedInput = null
+      this.$store.state.selectedInput = null
       this.$store.commit("unSelectAll");
     }
   }

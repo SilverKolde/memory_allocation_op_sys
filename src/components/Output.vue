@@ -18,10 +18,6 @@
 
 <script>
 
-//TODO Sibling communication - listen click events and clear variables
-
-// I think I should listen for clicks and rerender OutPut component each time a button was clicked in input
-
 export default {
   name: "OutPut",
   computed: {
@@ -30,13 +26,12 @@ export default {
       return (algo !== null) ? algo.text : ""
     }
   },
-
   methods: {
     setID(j, i) {
       return (j-3).toString() + "," + (i-2).toString()
     },
     fillCell(x, y) {
-      let cmd = this.$store.state.pickedInput
+      let cmd = this.$store.state.selectedInput
       let algo = this.$store.state.selectedAlgorithm
       // if there's nothing to calculate
       if (cmd === null || algo === null)
@@ -48,21 +43,17 @@ export default {
          calculateOutput(cmd, algo)
 
       // Change the background color
-      let letterForDIsplay = outputMatrice[y][x]
+      let letterForDisplay = outputMatrice[y][x]
 
+      if (letterForDisplay === " ")
+        cantPlaceOnThisLine = y;
 
-
-      if (letterForDIsplay === "X")
-        console.log("modify");
-
-
-      changeOutputBackground(letterForDIsplay, x+","+y)
-
+      changeOutputBackground(letterForDisplay, x+","+y)
       // now display already calculated output
-      return letterForDIsplay
+      return letterForDisplay
     },
     fillCMD(i) {
-      let cmd = this.$store.state.pickedInput
+      let cmd = this.$store.state.selectedInput
       if (cmd !== null) {
         cmd = cmd.split(";")
         let letters = "ABCDEFGHIJ";
@@ -113,13 +104,10 @@ function firstFitter(cmd) {
 
     let firstFreeSlot = findFirstFreeSlot(i, memUnits)
 
-    // Algorithm stops, if can't find a slot
+    // Algorithm fills the line with error message, if can't find a slot
     if (firstFreeSlot.length === 0) {
-      console.log("############################################# Not enough memory, do smth bout that");
-      for (let j = 0; j < outputMatrice[i].length; j++) {
-        outputMatrice[i][j] = "X"
-      }
-      return;
+      outputMatrice[i] = processWontFit();
+      continue;
     }
 
     let from = firstFreeSlot[0]
@@ -167,13 +155,10 @@ function lastFitter(cmd) {
     let slots = findFreeSlots(i)
     let lastBigEnoughSlot = findLastBigEnoughSlot(slots, memUnits)
 
-    // Algorithm stops if couldn't find free slot
+    // Algorithm fills the line with error message, if can't find a slot
     if (lastBigEnoughSlot.length === 0) {
-      console.log("############################################# Not enough memory, do smth bout that");
-      for (let j = 0; j < outputMatrice[i].length; j++) {
-        outputMatrice[i][j] = "X"
-      }
-      return;
+      outputMatrice[i] = processWontFit();
+      continue;
     }
 
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
@@ -212,13 +197,10 @@ function bestFitter(cmd) {
 
     let bestSlot = findBestSlot(slots, memUnits)
 
-    // Algorithm stops if couldn't find free slot
+    // Algorithm fills the line with error message, if can't find a slot
     if (bestSlot.length === 0) {
-      console.log("############################################# Not enough memory, do smth bout that");
-      for (let j = 0; j < outputMatrice[i].length; j++) {
-        outputMatrice[i][j] = "X"
-      }
-      return;
+      outputMatrice[i] = processWontFit();
+      continue;
     }
 
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
@@ -264,22 +246,10 @@ function worstFitter(cmd) {
     let slots = findFreeSlots(i)
     let biggest = biggestSlot(slots)
 
-    // Algorithm stops if couldn't find free slot that is big enough
+    // Algorithm fills the line with error message, if can't find a slot
     if (suitableSlotNotFound(biggest, memUnits)) {
-      console.log("############################################# Not enough memory, do smth bout that");
-      // for (let j = 0; j < outputMatrice[i].length; j++) {
-      //   outputMatrice[i][j] = "X"
-      // }
-
-
-
-
-      outputMatrice[i][0] = "X"
-
-
-
-
-      return;
+      outputMatrice[i] = processWontFit();
+      continue;
     }
 
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
@@ -288,7 +258,6 @@ function worstFitter(cmd) {
         outputMatrice[k][j] = letters[i]
       }
     }
-
   }
 
   function suitableSlotNotFound(biggest, memUnits) {
@@ -325,13 +294,10 @@ function randomFitter(cmd) {
     let slots = findFreeSlots(i)
     let randomSlot = findRandomSlotThatIsBigEnough(slots, memUnits)
 
-    // Algorithm stops if couldn't find free slot that is big enough
+    // Algorithm fills the line with error message, if can't find a slot
     if (randomSlot.length === 0) {
-      console.log("############################################# Not enough memory, do smth bout that");
-      for (let j = 0; j < outputMatrice[i].length; j++) {
-        outputMatrice[i][j] = "X"
-      }
-      return;
+      outputMatrice[i] = processWontFit();
+      continue;
     }
 
     // Modify outputMatrice 2 dimensional area. ( from point (k, j), area size (memUnits x timeUnits) )
@@ -358,6 +324,7 @@ function randomFitter(cmd) {
 // ===================================== Helper methods ============================================================= //
 
 let outputMatrice = fillUp()
+let cantPlaceOnThisLine = -1;
 
 function fillUp() {
   let arr = []
@@ -398,10 +365,27 @@ function changeOutputBackground(letter, id) {
   let letters = "ABCDEFGHIJ"
   let colors = ["#00ff00", "#ff3333", "darkorange", "#0099ff", "yellow", "#b366ff", "#cc9900", "#ff0066", "cyan"]
   let index = letters.indexOf(letter)
-  if (index >= 0) {
+  if (cantPlaceOnThisLine < 0 && index >= 0) {
     document.getElementById(id).style.backgroundColor = colors[index]
+  } else if (cantPlaceOnThisLine >= 0) {
+    document.getElementById(id).style.backgroundColor = "black"
+    document.getElementById(id).style.color = "white"
+
+    // if faulty line is marked, continue work as usual
+    if (id.substring(0,2) === "49")
+      cantPlaceOnThisLine = -1
   }
 }
+
+function processWontFit() {
+  let arr = []
+  let str = "              PROTSESS EI MAHU MÄLLU!             "
+  for (let i = 0; i < str.length; i++) {
+    arr.push(str[i]);
+  }
+  return arr
+}
+
 </script>
 
 <style scoped>
