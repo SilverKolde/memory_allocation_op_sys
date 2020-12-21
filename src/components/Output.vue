@@ -4,8 +4,8 @@
     <table>
       <tr v-for="i in 11" :key="i">
         <td v-for="j in 52" :key="j" class="cell">
-          <span v-if="i===1 && j===1"><strong>Etapp</strong></span>
-          <span v-else-if="i===1 && j===2"><strong>Lisatud<br>protsess</strong></span>
+          <span v-if="i===1 && j===1"><strong>Step nr</strong></span>
+          <span v-else-if="i===1 && j===2"><strong>Added<br>Process</strong></span>
           <span v-else-if="i===1 && j>2">{{ j-3 }}</span>
           <span v-else-if="i>1 && j===1">{{ i-1 }}</span>
           <span v-else-if="i>1 && j===2">{{ fillCMD(i) }}</span>
@@ -277,7 +277,7 @@ function worstFitter(cmd) {
       continue;
     }
 
-    // we have to display only 10 steps, so we don-t care about the rest
+    // we have to display only 10 steps, so we don't care about the rest
     if (i+timeUnits > 10) {
       notifyUserTableNotBigEnough(letters[i], process, (i+timeUnits-10));
       timeUnits = 10;
@@ -418,7 +418,7 @@ function changeOutputBackground(letter, id) {
 
 function processWontFit() {
   let arr = []
-  let str = "              PROTSESS EI MAHU MÄLLU!             "
+  let str = "    NOT ENOUGH MEMORY FOR THIS PROCESS!"
   for (let i = 0; i < str.length; i++) {
     arr.push(str[i]);
   }
@@ -427,8 +427,8 @@ function processWontFit() {
 
 function notifyUserTableNotBigEnough(letter, proc, leftOut) {
   let element = document.createElement("h5");
-  let str = document.createTextNode("Protsess " + letter + " : " + proc + " ei mahtunud tabelisse ära. \n" + leftOut +
-      " rida jäi tabelist välja.      (tahtsin teha tabeli dünaamiliselt suurenevaks, kui kood läks liiga spagetiks ära ja pole aega ümber strukueerida)");
+  let str = document.createTextNode("Process " + letter + " : " + proc + " was not displayed fully. " + leftOut +
+      " rows were not displayed because adding rows is not dynamic.");
   element.appendChild(str);
   let existingNode = document.getElementById("helper");
   existingNode.insertBefore(element, existingNode.childNodes[0])

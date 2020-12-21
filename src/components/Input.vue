@@ -1,13 +1,27 @@
 <template>
   <div>
+
+    <h3>
+      <span id="NB"><Strong>NB! Application is equipped with lots of bugs and unintuitive UX :)</Strong></span><br>
+    </h3>
     <h4>
-      <span id="NB"><Strong>NB! Rakenduses on sees kasutajavaenulikud vead.</Strong></span><br>
-      Kui oled valinud järjendi ja algoritmi, siis kuvatakse sisu nii nagu peab. Kui aga soovid valida uue algoritmi ja/või järjendi, siis pead lehekülge värskendama (refresh).<br>
-      Enne tähtaega ma paraku ei jõua seda viga parandada, vast saab lehte pidevalt värskendades hakkama.
+      The goal of this application is to visualize the workflow of the memory allocation algorithms.<br>
+      Processes are separated by semicolons. Each process needs a certain memory area (memUnits) and needs it for a certain time (timeUnits). The process is described as "memUnits,timeUnits"<br>
+      We have in total 50 units of memory (x-axis) and we'll display only the first 10 seconds of partitioning (y-axis).<br>
     </h4>
+    <h5>
+      Example:<br>
+      Given a list of processes "1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1".<br>
+      On the first second, we'll allocate 1 memory unit for this process and it needs this memory area for 8 consecutive seconds.<br>
+      In the next second we register a process that demands 35 units of memory and needs it for 4 seconds.<br>
+      If there is no room to place a process, we'll display that we are out of memory.<br><br>
+    </h5>
+    <h5>
+      Note: You have to refresh the page each time you select a new algorithm/list of processes because I was newbie and hardcoded some parts that should've been dynamic :)
+    </h5>
     <div class="input-container">
       <div>
-        <h3>Vali või sisesta kümneelemendiline järjend kujul 1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1</h3>
+        <h3>Select or insert a list of processes in the form of 1,8;35,4;3,6;4,2;1,4;3,3;1,2;5,1;50,1</h3>
         <table>
           <tr v-for="(inputLine, index) in inputLines" :key="index">
             <td>
@@ -20,7 +34,7 @@
             <td v-else><input name="myProc" type="text"/></td>
           </tr>
         </table>
-        <h3>Vali algoritm</h3>
+        <h3>Select an algorithm</h3>
       </div>
       <div class="buttons">
         <div class="buttons" v-for="(button, index) in algoButtons" :key="index">
@@ -54,7 +68,7 @@ export default {
       if (this.$store.getters.getSelectedInput !== null)
         this.clear();
       let procs;
-      if (inputLine.label === "Enda oma") {
+      if (inputLine.label === "Custom") {
         procs = document.querySelector("input[name=myProc]").value
       }
       else procs = inputLine.processes
